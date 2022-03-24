@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum Stat
 {
@@ -42,6 +43,8 @@ public class TheTower : MonoBehaviour
         CreateTowerMesh();
         LoadLocal();
         RescaleTower();
+
+        SceneManager.LoadScene("Menu");
 
     }
 
@@ -133,6 +136,16 @@ public class TheTower : MonoBehaviour
     private void SaveCloud()
     {
 
+    }
+    
+    public float GetTowerHeight()
+    {
+        return BASE_TOWER_HEIGHT + TowerStats[(int)Stat.Range] * RANGE_HEIGHT_GAIN;
+    }
+
+    public float GetTowerWidth()
+    {
+        return BASE_TOWER_WIDTH + TowerStats[(int)Stat.Hitpoint] * HITPOINT_WIDTH_GAIN;
     }
     
     private void OnApplicationQuit()
