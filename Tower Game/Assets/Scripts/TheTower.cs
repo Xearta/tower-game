@@ -92,10 +92,10 @@ public class TheTower : MonoBehaviour
     public void TakeDamage(float amount)
     {
         Hitpoint -= amount;
+        GameUI.Instance.UpdateHealthBar();
 
         if (Hitpoint < 0)
         {
-            Hitpoint = StatsHelper.Instance.GetStatValue(Stat.Hitpoint);
             recapMenu.SetActive(true);
         }
     }

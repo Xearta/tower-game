@@ -39,7 +39,10 @@ public class StatContainer : MonoBehaviour
             UpdateText();
 
             if (stat == Stat.Hitpoint || stat == Stat.Range)
+            {
+                GameUI.Instance.UpdateHealthBar();
                 TheTower.Instance.RescaleTower();
+            }
         }
         else
         {
