@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HubManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class HubManager : MonoBehaviour
     // HubObject
     public Button backButton;
     private HubObject currentHubObject;
+    private bool transitionFrame = false;
 
     // Camera
     public Transform defaultCameraWaypoint;
@@ -31,7 +33,7 @@ public class HubManager : MonoBehaviour
     {
         MoveCamera();
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && !transitionFrame)
         {
             RaycastHit hit;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 75.0f, LayerMask.GetMask("HubObject")))
@@ -42,6 +44,7 @@ public class HubManager : MonoBehaviour
                 backButton.interactable = true;
             }
         }
+        transitionFrame = false;
     }
 
     private void MoveCamera()
@@ -61,9 +64,15 @@ public class HubManager : MonoBehaviour
         if (currentHubObject == null)
             return;
 
+        transitionFrame = true;
         currentHubObject.FadeMenu(false);
         currentHubObject = null;
         backButton.interactable = false;
         SetDesiredWaypoint(defaultCameraWaypoint);
+    }
+
+    public void StartMission()
+    {
+        SceneManager.LoadScene("Game");
     }
 }
