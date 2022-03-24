@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public enum Stat
@@ -7,7 +8,11 @@ public enum Stat
     Damage = 0,
     Range,
     Speed,
-    Hitpoint
+    Hitpoint,
+    Regen,
+    CritChance,
+    CritDamage,
+    Luck
 }
 
 public class TheTower : MonoBehaviour
@@ -34,9 +39,8 @@ public class TheTower : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        TowerStats = new[] { 1, 1, 1, 1 };
-
         CreateTowerMesh();
+        LoadLocal();
         RescaleTower();
 
     }
@@ -88,5 +92,51 @@ public class TheTower : MonoBehaviour
         newScale.z = newScale.x;
         newScale.y = BASE_TOWER_HEIGHT + TowerStats[(int)Stat.Range] * RANGE_HEIGHT_GAIN;
         transform.localScale = newScale;
+    }
+
+    private void LoadLocal()
+    {
+        TowerStats = new int[Enum.GetNames(typeof(Stat)).Length];
+
+        TowerStats[(int)Stat.Damage] = PlayerPrefs.GetInt("StatDamage");
+        TowerStats[(int)Stat.Hitpoint] = PlayerPrefs.GetInt("StatHitpoint");
+        TowerStats[(int)Stat.Range] = PlayerPrefs.GetInt("StatRange");
+        TowerStats[(int)Stat.Speed] = PlayerPrefs.GetInt("StatSpeed");
+        TowerStats[(int)Stat.Regen] = PlayerPrefs.GetInt("StatRegen");
+        TowerStats[(int)Stat.CritChance] = PlayerPrefs.GetInt("StatCritChance");
+        TowerStats[(int)Stat.CritDamage] = PlayerPrefs.GetInt("StatCritDamage");
+        TowerStats[(int)Stat.Luck] = PlayerPrefs.GetInt("Luck");
+
+        // if it is the first time, set all null values on level 1
+        for (int i = 0; i < TowerStats.Length; i++)
+            if (TowerStats[i] == 0)
+                TowerStats[i] = 1;
+    }
+
+    private void LoadCloud()
+    {
+
+    }
+
+    private void SaveLocal()
+    {
+        PlayerPrefs.SetInt("StatDamage", TowerStats[(int)Stat.Damage]);
+        PlayerPrefs.SetInt("StatHitpoint", TowerStats[(int)Stat.Hitpoint]);
+        PlayerPrefs.SetInt("StatRange", TowerStats[(int)Stat.Range]);
+        PlayerPrefs.SetInt("StatSpeed", TowerStats[(int)Stat.Speed]);
+        PlayerPrefs.SetInt("StatRegen", TowerStats[(int)Stat.Regen]);
+        PlayerPrefs.SetInt("StatCritChance", TowerStats[(int)Stat.CritChance]);
+        PlayerPrefs.SetInt("StatCritDamage", TowerStats[(int)Stat.CritDamage]);
+        PlayerPrefs.SetInt("StatLuck", TowerStats[(int)Stat.Luck]);
+    }
+
+    private void SaveCloud()
+    {
+
+    }
+    
+    private void OnApplicationQuit()
+    {
+        SaveLocal();
     }
 }
