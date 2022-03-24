@@ -39,7 +39,7 @@ public class MenuManager : MonoBehaviour
         MoveCamera();
         UpdateFade();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonUp(0))
         {
             OnTouch();
         }
@@ -78,7 +78,8 @@ public class MenuManager : MonoBehaviour
 
     public void ToGame()
     {
-        SceneManager.LoadScene("Hub");
+        if (menuAvailable)
+            SceneManager.LoadScene("Hub");
     }
 
     public void AchievementButton()
