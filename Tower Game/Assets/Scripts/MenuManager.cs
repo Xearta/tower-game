@@ -99,7 +99,8 @@ public class MenuManager : MonoBehaviour
 
     public void ResetSaveButton()
     {
-        Debug.Log("Reset Save");
+        PlayerPrefs.DeleteAll();
+        TheTower.Instance.ReloadSaveData();
     }
 
     private Vector3 CalculateCameraOffset()

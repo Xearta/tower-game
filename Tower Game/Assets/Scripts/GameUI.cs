@@ -63,7 +63,7 @@ public class GameUI : MonoBehaviour
         if (currentHP > 0)
         {
             healthImage.color = Color.Lerp(hitpointDying, hitpointHealthy, ratio);
-            healthText.text = currentHP.ToString() + " / " + maxHP.ToString();
+            healthText.text = currentHP.ToString("0") + " / " + maxHP.ToString("0");
             healthBarTransform.localScale = new Vector3(ratio, 1, 1);
         }
         else

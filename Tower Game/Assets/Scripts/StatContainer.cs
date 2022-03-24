@@ -7,12 +7,14 @@ public class StatContainer : MonoBehaviour
 {
     public Stat stat;
 
+    private int maxLevel;
     private Text[] texts;
 
     private void Start()
     {
         texts = GetComponentsInChildren<Text>();
         GetComponentInChildren<Button>().onClick.AddListener(LevelUp);
+        maxLevel = StatsHelper.Instance.GetStatMaxLevel(stat);
         UpdateText();
     }
 
@@ -21,7 +23,17 @@ public class StatContainer : MonoBehaviour
         int statLevel = TheTower.Instance.TowerStats[(int)stat];
 
         texts[0].text = stat.ToString(); // Title
-        texts[1].text = StatsHelper.Instance.GetPrice(statLevel) + " gold\nLevel Up"; 
+
+        if (statLevel < maxLevel)
+        {
+            texts[1].text = StatsHelper.Instance.GetPrice(statLevel) + " gold\nLevel Up"; 
+        }
+        else
+        {
+            texts[1].transform.parent.GetComponent<Button>().interactable = false;
+            texts[1].text = "MAX";
+        }
+
         texts[2].text = "Lv." + statLevel;
         texts[3].text = StatsHelper.Instance.GetStatValue(stat).ToString();
     }

@@ -17,6 +17,9 @@ public class TheTower : MonoBehaviour
     // Hitpoint
     private const float HITPOINT_WIDTH_GAIN = 0.025f;
 
+    // Regen
+    private const float REGEN_TICK = 0.5f;
+
 
     public static TheTower Instance{ set; get; }
     public int[] TowerStats{ set; get; }
@@ -27,6 +30,7 @@ public class TheTower : MonoBehaviour
 
     private bool isInGame = false;
     private float lastAttack;
+    private float lastRegen;
     private GameObject recapMenu;
 
     // Start is called before the first frame update
@@ -48,6 +52,8 @@ public class TheTower : MonoBehaviour
     {
         if (isInGame)
         {
+            RegenerateHitpoint();
+
             // look for enemies
             if (Time.time - lastAttack > StatsHelper.Instance.GetStatValue(Stat.Speed))
             {
@@ -97,6 +103,20 @@ public class TheTower : MonoBehaviour
         if (Hitpoint < 0)
         {
             recapMenu.SetActive(true);
+        }
+    }
+
+    private void RegenerateHitpoint()
+    {
+        if (Time.time - lastRegen > REGEN_TICK)
+        {
+            Hitpoint += (StatsHelper.Instance.GetStatValue(Stat.Regen) / 5) * REGEN_TICK;
+            if (Hitpoint > StatsHelper.Instance.GetStatValue(Stat.Hitpoint))
+                Hitpoint = StatsHelper.Instance.GetStatValue(Stat.Hitpoint);
+
+            GameUI.Instance.UpdateHealthBar();
+            lastRegen = Time.time;
+
         }
     }
 
@@ -220,6 +240,11 @@ public class TheTower : MonoBehaviour
         return BASE_TOWER_WIDTH + TowerStats[(int)Stat.Hitpoint] * HITPOINT_WIDTH_GAIN;
     }
     
+    public void ReloadSaveData()
+    {
+        LoadLocal();
+    }
+
     private void OnApplicationQuit()
     {
         SaveLocal();
