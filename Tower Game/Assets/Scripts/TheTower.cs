@@ -4,18 +4,6 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum Stat
-{
-    Damage = 0,
-    Range,
-    Speed,
-    Hitpoint,
-    Regen,
-    CritChance,
-    CritDamage,
-    Luck
-}
-
 public class TheTower : MonoBehaviour
 {
     // Constants
@@ -32,6 +20,7 @@ public class TheTower : MonoBehaviour
 
     public static TheTower Instance{ set; get; }
     public int[] TowerStats{ set; get; }
+    public float Hitpoint{ set; get; }
     public Material towerMat;
     public GameObject projectilePrefab;
 
@@ -49,6 +38,8 @@ public class TheTower : MonoBehaviour
         LoadLocal();
         RescaleTower();
 
+        Hitpoint = StatsHelper.Instance.GetStatValue(Stat.Hitpoint);
+
         SceneManager.LoadScene("Menu");
     }
 
@@ -57,9 +48,9 @@ public class TheTower : MonoBehaviour
         if (isInGame)
         {
             // look for enemies
-            if (Time.time - lastAttack > TowerStats[(int)Stat.Speed])
+            if (Time.time - lastAttack > StatsHelper.Instance.GetStatValue(Stat.Speed))
             {
-                Collider[] col = Physics.OverlapSphere(transform.position, TowerStats[(int)Stat.Range] + 5, LayerMask.GetMask("Enemy"));
+                Collider[] col = Physics.OverlapSphere(transform.position, StatsHelper.Instance.GetStatValue(Stat.Range), LayerMask.GetMask("Enemy"));
                 if (col.Length != 0)
                 {
                     // find closest one
@@ -91,16 +82,19 @@ public class TheTower : MonoBehaviour
 
         GameObject go = Instantiate(projectilePrefab, projectileSpawnPoint, Quaternion.identity) as GameObject;
         Projectile p = go.GetComponent<Projectile>();
-        p.LaunchProjectile(target, TowerStats[(int)Stat.Damage]);
+
+        //! Calculate crit damage
+
+        p.LaunchProjectile(target, StatsHelper.Instance.GetStatValue(Stat.Damage));
     }
 
     public void TakeDamage(float amount)
     {
-        TowerStats[(int)Stat.Hitpoint] -= (int)amount;
+        Hitpoint -= amount;
 
-        if (TowerStats[(int)Stat.Hitpoint] < 0)
+        if (Hitpoint < 0)
         {
-            TowerStats[(int)Stat.Hitpoint] = 10;
+            Hitpoint = StatsHelper.Instance.GetStatValue(Stat.Hitpoint);
             recapMenu.SetActive(true);
         }
     }
@@ -155,7 +149,7 @@ public class TheTower : MonoBehaviour
         gameObject.AddComponent<MeshRenderer>().material = towerMat;
     }
 
-    private void RescaleTower()
+    public void RescaleTower()
     {
         Vector3 newScale = Vector3.zero;
         newScale.x = BASE_TOWER_WIDTH + TowerStats[(int)Stat.Hitpoint] * HITPOINT_WIDTH_GAIN;
