@@ -49,8 +49,17 @@ public class Enemy : MonoBehaviour
     {
         if (isAlive)
         {
-            transition += Time.deltaTime;
+            transition += Time.deltaTime * 1/timeToTower;
             transform.position = Vector3.Lerp(startPosition, endPosition, transition);
+
+            if (transition > 1)
+            {
+                if(Time.time - lastHit > 1 / attackPerSecond)
+                {
+                    lastHit = Time.time;
+                    TheTower.Instance.TakeDamage(damage);
+                }
+            }
         }
     }
 }

@@ -37,6 +37,7 @@ public class TheTower : MonoBehaviour
 
     private bool isInGame = false;
     private float lastAttack;
+    private GameObject recapMenu;
 
     // Start is called before the first frame update
     void Start()
@@ -93,11 +94,25 @@ public class TheTower : MonoBehaviour
         p.LaunchProjectile(target, TowerStats[(int)Stat.Damage]);
     }
 
+    public void TakeDamage(float amount)
+    {
+        TowerStats[(int)Stat.Hitpoint] -= (int)amount;
 
+        if (TowerStats[(int)Stat.Hitpoint] < 0)
+        {
+            TowerStats[(int)Stat.Hitpoint] = 10;
+            recapMenu.SetActive(true);
+        }
+    }
 
     private void OnLevelWasLoaded(int levelIndex)
     {
         isInGame = SceneManager.GetActiveScene().name == "Game";
+        if (isInGame)
+        {
+            recapMenu = GameObject.Find("RecapMenu");
+            recapMenu.SetActive(false);
+        }
     }
 
     private void CreateTowerMesh()
