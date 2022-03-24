@@ -14,6 +14,13 @@ public enum Stat
     Luck
 }
 
+public enum Currency
+{
+    Gold = 0,
+    MagicBrick,
+    Diamond
+}
+
 public class StatsHelper : MonoBehaviour
 {
     #region Stats Const

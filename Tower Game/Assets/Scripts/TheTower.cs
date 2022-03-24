@@ -20,6 +20,7 @@ public class TheTower : MonoBehaviour
 
     public static TheTower Instance{ set; get; }
     public int[] TowerStats{ set; get; }
+    public int[] Currencies { set; get; }
     public float Hitpoint{ set; get; }
     public Material towerMat;
     public GameObject projectilePrefab;
@@ -175,6 +176,12 @@ public class TheTower : MonoBehaviour
         for (int i = 0; i < TowerStats.Length; i++)
             if (TowerStats[i] == 0)
                 TowerStats[i] = 1;
+        
+        Currencies = new int[Enum.GetNames(typeof(Currency)).Length];
+
+        Currencies[(int)Currency.Gold] = PlayerPrefs.GetInt("CurrencyGold");
+        Currencies[(int)Currency.MagicBrick] = PlayerPrefs.GetInt("CurrencyMagicBrick");
+        Currencies[(int)Currency.Diamond] = PlayerPrefs.GetInt("CurrencyDiamond");
     }
 
     private void LoadCloud()
@@ -192,6 +199,10 @@ public class TheTower : MonoBehaviour
         PlayerPrefs.SetInt("StatCritChance", TowerStats[(int)Stat.CritChance]);
         PlayerPrefs.SetInt("StatCritDamage", TowerStats[(int)Stat.CritDamage]);
         PlayerPrefs.SetInt("StatLuck", TowerStats[(int)Stat.Luck]);
+
+        PlayerPrefs.SetInt("CurrencyGold", Currencies[(int)Currency.Gold]);
+        PlayerPrefs.SetInt("CurrencyMagicBrick", Currencies[(int)Currency.MagicBrick]);
+        PlayerPrefs.SetInt("CurrencyDiamond", Currencies[(int)Currency.Diamond]);
     }
 
     private void SaveCloud()

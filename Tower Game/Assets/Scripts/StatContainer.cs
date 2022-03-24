@@ -28,12 +28,25 @@ public class StatContainer : MonoBehaviour
 
     private void LevelUp()
     {
-        //! if enough currency
-        TheTower.Instance.TowerStats[(int)stat]++;
-        UpdateText();
+        // if enough currency
+        int price = StatsHelper.Instance.GetPrice(TheTower.Instance.TowerStats[(int)stat]);
+        if (TheTower.Instance.Currencies[(int)Currency.Gold] >= price)
+        {
+            TheTower.Instance.Currencies[(int)Currency.Gold] -= price;
+            GameUI.Instance.UpdateCurrenciesText();
 
-        if (stat == Stat.Hitpoint || stat == Stat.Range)
-            TheTower.Instance.RescaleTower();
+            TheTower.Instance.TowerStats[(int)stat]++;
+            UpdateText();
+
+            if (stat == Stat.Hitpoint || stat == Stat.Range)
+                TheTower.Instance.RescaleTower();
+        }
+        else
+        {
+            Debug.Log("Not enough money :(");
+        }
+
+      
 
     }
 }

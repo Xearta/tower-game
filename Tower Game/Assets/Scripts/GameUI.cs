@@ -5,12 +5,17 @@ using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
+    public static GameUI Instance { set; get; }
+
     public GameObject[] panels;
     public Button[] buttons;
+    public Text[] currenciesText;
 
     private void Start()
     {
+        Instance = this;
         NavigateTo(0);
+        UpdateCurrenciesText();
     }
 
     public void NavigateTo(int menuIndex)
@@ -27,5 +32,12 @@ public class GameUI : MonoBehaviour
                 panels[i].SetActive(false);
             }
         }
+    }
+
+    public void UpdateCurrenciesText()
+    {
+        currenciesText[0].text = TheTower.Instance.Currencies[(int)Currency.Gold].ToString();
+        currenciesText[1].text = TheTower.Instance.Currencies[(int)Currency.MagicBrick].ToString();
+        currenciesText[2].text = TheTower.Instance.Currencies[(int)Currency.Diamond].ToString();
     }
 }
