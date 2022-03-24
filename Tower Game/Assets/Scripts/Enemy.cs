@@ -38,6 +38,13 @@ public class Enemy : MonoBehaviour
         isAlive = false;
     }
 
+    public void TakeDamage(float amount)
+    {
+        hitpoint -= amount;
+        if (hitpoint <= 0)
+            RemoveEnemy();
+    }
+
     private void Update()
     {
         if (isAlive)

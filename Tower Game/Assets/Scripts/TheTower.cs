@@ -33,6 +33,10 @@ public class TheTower : MonoBehaviour
     public static TheTower Instance{ set; get; }
     public int[] TowerStats{ set; get; }
     public Material towerMat;
+    public GameObject projectilePrefab;
+
+    private bool isInGame = false;
+    private float lastAttack;
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +49,55 @@ public class TheTower : MonoBehaviour
         RescaleTower();
 
         SceneManager.LoadScene("Menu");
+    }
 
+    private void Update()
+    {
+        if (isInGame)
+        {
+            // look for enemies
+            if (Time.time - lastAttack > TowerStats[(int)Stat.Speed])
+            {
+                Collider[] col = Physics.OverlapSphere(transform.position, TowerStats[(int)Stat.Range] + 5, LayerMask.GetMask("Enemy"));
+                if (col.Length != 0)
+                {
+                    // find closest one
+                    int closestIndex = 0;
+                    float dist = Vector3.SqrMagnitude(col[closestIndex].transform.position - transform.position);
+                    for (int i = 1; i < col.Length; i++)
+                    {
+                        float newDistance = Vector3.SqrMagnitude(col[i].transform.position - transform.position);
+                        if (newDistance < dist)
+                        {
+                            dist = newDistance;
+                            closestIndex = 1;
+                        }
+                    }
+
+                    // shoot the closest enemy
+                    ShootEnemy(col[closestIndex].transform);
+                    lastAttack = Time.time;
+
+                }
+            }
+        }
+    }
+
+    private void ShootEnemy(Transform target)
+    {
+        Vector3 projectileSpawnPoint = target.position.normalized;
+        projectileSpawnPoint.y = GetTowerHeight();
+
+        GameObject go = Instantiate(projectilePrefab, projectileSpawnPoint, Quaternion.identity) as GameObject;
+        Projectile p = go.GetComponent<Projectile>();
+        p.LaunchProjectile(target, TowerStats[(int)Stat.Damage]);
+    }
+
+
+
+    private void OnLevelWasLoaded(int levelIndex)
+    {
+        isInGame = SceneManager.GetActiveScene().name == "Game";
     }
 
     private void CreateTowerMesh()
